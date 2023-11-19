@@ -6,23 +6,23 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mintokoneko.minto.databinding.ItemChatPreviewBinding
-import com.mintokoneko.minto.entities.ChatPreview
+import com.mintokoneko.minto.entities.ChatUserPreview
 
 class ChatsAdapter(
     private val callback: (Int) -> Unit
-) : ListAdapter<ChatPreview, ChatsAdapter.ChatsViewHolder>(DIFF_CALLBACK) {
+) : ListAdapter<ChatUserPreview, ChatsAdapter.ChatsViewHolder>(DIFF_CALLBACK) {
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ChatPreview>() {
-            override fun areItemsTheSame(oldItem: ChatPreview, newItem: ChatPreview)
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ChatUserPreview>() {
+            override fun areItemsTheSame(oldItem: ChatUserPreview, newItem: ChatUserPreview)
                 = oldItem.chatId == newItem.chatId
 
-            override fun areContentsTheSame(oldItem: ChatPreview, newItem: ChatPreview)
+            override fun areContentsTheSame(oldItem: ChatUserPreview, newItem: ChatUserPreview)
                 = oldItem == newItem
         }
     }
 
     inner class ChatsViewHolder(private val binding: ItemChatPreviewBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(chatPreview: ChatPreview) {
+        fun bind(chatUserPreview: ChatUserPreview) {
             if (adapterPosition != RecyclerView.NO_POSITION) {
                 binding.root.setOnClickListener {
                     callback.invoke(getItem(adapterPosition).chatId)
@@ -30,9 +30,9 @@ class ChatsAdapter(
             }
 
             binding.apply {
-                chatPreviewUserName.text = chatPreview.userName
-                chatPreviewMessage.text = chatPreview.message
-                chatPreviewUserPhoto.setImageResource(chatPreview.userPhoto)
+                chatPreviewUserName.text = chatUserPreview.userName
+                chatPreviewMessage.text = chatUserPreview.message
+                chatPreviewUserPhoto.setImageResource(chatUserPreview.userPhoto)
             }
         }
     }

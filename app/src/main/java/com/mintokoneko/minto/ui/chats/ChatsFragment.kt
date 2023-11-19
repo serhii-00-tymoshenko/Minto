@@ -1,17 +1,17 @@
 package com.mintokoneko.minto.ui.chats
 
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mintokoneko.minto.R
 import com.mintokoneko.minto.databinding.FragmentChatsBinding
-import com.mintokoneko.minto.entities.ChatPreview
+import com.mintokoneko.minto.entities.ChatUserPreview
 import com.mintokoneko.minto.ui.chat.ChatFragment
 import com.mintokoneko.minto.ui.chats.adapters.ChatsAdapter
 import com.mintokoneko.minto.utils.getWidth
@@ -33,36 +33,36 @@ class ChatsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupChatsRecycler(requireContext())
+        setupChatsRecycler(requireActivity())
     }
 
-    private fun setupChatsRecycler(context: Context) {
+    private fun setupChatsRecycler(activity: Activity) {
         chatsAdapter = ChatsAdapter { chatId ->
-            showChat(chatId, context)
+            showChat(chatId, activity)
         }
 
         val chatsRecycler = binding.chatsRecycler
         chatsRecycler.apply {
             adapter = chatsAdapter
-            layoutManager = LinearLayoutManager(requireContext())
+            layoutManager = LinearLayoutManager(activity)
             setHasFixedSize(true)
         }
 
         chatsAdapter.submitList(
             listOf(
-                ChatPreview(
+                ChatUserPreview(
                     "Serhii Tymoshenko",
                     R.drawable.ic_launcher_background,
                     "Hello World",
                     0
                 ),
-                ChatPreview(
+                ChatUserPreview(
                     "Serhii Tymoshenko",
                     R.drawable.ic_launcher_background,
                     "Hello World1",
                     1
                 ),
-                ChatPreview(
+                ChatUserPreview(
                     "Serhii Tymoshenko",
                     R.drawable.ic_launcher_background,
                     "Hello World2",
@@ -72,25 +72,27 @@ class ChatsFragment : Fragment() {
         )
     }
 
-    private fun showChat(chatId: Int, context: Context) {
-        if (getWidth(context) < 600) {
+    private fun showChat(chatId: Int, activity: Activity) {
+        if (getWidth(activity) < 600) {
             val showChatAction = ChatsFragmentDirections.actionChatsFragmentToChatFragment(chatId)
             requireView().findNavController().navigate(showChatAction)
         } else {
-            val fragmentManager = requireActivity().supportFragmentManager
-
-
             val chatFragment = ChatFragment()
             val bundle = Bundle()
             bundle.putInt("chat_id", chatId)
             chatFragment.arguments = bundle
 
-            fragmentManager
-                .beginTransaction()
-                .replace(binding.chatContainer!!.id, chatFragment)
-                .addToBackStack(null)
-                .commit()
+            invokeChatTransaction(chatFragment, activity)
         }
+    }
+
+    private fun invokeChatTransaction(chatFragment: ChatFragment, activity: Activity) {
+        val fragmentManager = (activity as FragmentActivity).supportFragmentManager
+        fragmentManager
+            .beginTransaction()
+            .replace(binding.chatContainer!!.id, chatFragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     override fun onDestroy() {

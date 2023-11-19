@@ -8,6 +8,7 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.widget.Toast
 import androidx.core.view.GestureDetectorCompat
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
@@ -25,11 +26,22 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupNavigation(this)
-        setSwipeableUserChange()
+        setSwipeableUserChange(this)
+    }
+
+    private fun setSwipeableUserChange(context: Context) {
+        val gestureDetector = setGestureDetector(context)
+        setTopAppBarPhotoListener(gestureDetector)
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun setSwipeableUserChange() {
+    private fun setTopAppBarPhotoListener(gestureDetector: GestureDetectorCompat) {
+        binding.mainContent.appBarLayout.topAppBarUserPhoto.setOnTouchListener { v, event ->
+            gestureDetector.onTouchEvent(event)
+        }
+    }
+
+    private fun setGestureDetector(context: Context): GestureDetectorCompat {
         val gestureDetectorListener = object : GestureDetector.SimpleOnGestureListener() {
             override fun onDown(e: MotionEvent): Boolean {
                 return true
@@ -43,33 +55,29 @@ class MainActivity : AppCompatActivity() {
             ): Boolean {
                 e1?.let {
                     if (e1.y - e2.y > USER_PHOTO_SWIPE_THRESHOLD) {
-                        Toast.makeText(this@MainActivity, "Previous user", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Previous user", Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(this@MainActivity, "Next user", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Next user", Toast.LENGTH_SHORT).show()
                     }
                 }
                 return true
             }
         }
-        val gestureDetector = GestureDetectorCompat(this, gestureDetectorListener)
+        val gestureDetector = GestureDetectorCompat(context, gestureDetectorListener)
 
-        binding.mainContent.appBarLayout.topAppBarUserPhoto.setOnTouchListener { v, event ->
-            gestureDetector.onTouchEvent(event)
-        }
+        return gestureDetector
     }
 
     private fun setupNavigation(context: Context) {
         val navHostFragment = supportFragmentManager.findFragmentById(binding.mainContent.fragmentContainer.id) as NavHostFragment
         val navController = navHostFragment.navController
-        val mainContent = binding.mainContent
 
-        if (getWidth(context) < 600) {
-            mainContent.bottomNavigation?.setupWithNavController(navController)
-        } else {
-            mainContent.navigationRail?.setupWithNavController(navController)
-        }
+        setupNavigationUi(context, navController)
+        setupTopAppBar(navController)
+    }
 
-        val topAppBar = mainContent.appBarLayout.topAppBar
+    private fun setupTopAppBar(navController: NavController) {
+        val topAppBar = binding.mainContent.appBarLayout.topAppBar
         val appBarConfiguration = AppBarConfiguration(navController.graph)
         topAppBar.setupWithNavController(navController, appBarConfiguration)
         topAppBar.setOnMenuItemClickListener { menuItem ->
@@ -78,19 +86,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupNavigationUi(
+        context: Context,
+        navController: NavController
+    ) {
+        if (getWidth(context) < 600) {
+            binding.mainContent.bottomNavigation?.setupWithNavController(navController)
+        } else {
+            binding.mainContent.navigationRail?.setupWithNavController(navController)
+        }
+    }
+
     private fun showSheet(context: Context) {
         if (getWidth(context) < 600) {
-            showBottomSheet()
+            showBottomSheet(context)
         } else {
             showSideSheet(context)
         }
     }
 
-    private fun showBottomSheet() {
-        Toast.makeText(this@MainActivity, "Bottom sheet", Toast.LENGTH_SHORT).show()
+    private fun showBottomSheet(context: Context) {
+        Toast.makeText(context, "Bottom sheet", Toast.LENGTH_SHORT).show()
     }
 
     private fun showSideSheet(context: Context) {
-        Toast.makeText(this@MainActivity, "Side sheet", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "Side sheet", Toast.LENGTH_SHORT).show()
     }
 }

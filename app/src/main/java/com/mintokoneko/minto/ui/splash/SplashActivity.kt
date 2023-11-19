@@ -24,15 +24,19 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        launchRegisterActivity()
+        closeSplashScreen()
     }
 
-    private fun launchRegisterActivity() {
+    private fun closeSplashScreen() {
         CoroutineScope(Dispatchers.Main).launch {
             delay(1000)
-            val registerActivityIntent = Intent(this@SplashActivity, MainActivity::class.java)
-            startActivity(registerActivityIntent)
-            finish()
+            invokeRegisterTransaction()
         }
+    }
+
+    private fun invokeRegisterTransaction() {
+        val registerActivityIntent = Intent(this@SplashActivity, MainActivity::class.java)
+        startActivity(registerActivityIntent)
+        finish()
     }
 }
