@@ -4,18 +4,9 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/top_app_bar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:titleCentered="true"
-        android:minHeight="?attr/actionBarSize"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:menu="@menu/app_bar_menu"
-        app:navigationIcon="@drawable/ic_back"
-        app:title="@string/app_name" />
+    <include
+        android:id="@+id/app_bar_layout"
+        layout="@layout/item_top_app_bar" />
 
     <com.google.android.material.navigationrail.NavigationRailView
         android:id="@+id/navigation_rail"
@@ -24,7 +15,7 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_app_bar"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout"
         app:menu="@menu/nav_menu" />
 
     <androidx.fragment.app.FragmentContainerView
@@ -36,7 +27,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/navigation_rail"
-        app:layout_constraintTop_toBottomOf="@+id/top_app_bar"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout"
         app:navGraph="@navigation/nav_graph" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

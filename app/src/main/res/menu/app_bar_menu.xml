@@ -8,10 +8,4 @@
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_settings"
         android:title="@string/settings_mi_title" />
-    <item
-        android:id="@+id/user_mi"
-        android:icon="@drawable/ic_profile"
-        android:enabled="true"
-        app:showAsAction="ifRoom"
-        android:title="@string/user_mi_title" />
 </menu>

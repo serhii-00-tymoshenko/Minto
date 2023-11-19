@@ -8,14 +8,17 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.sidesheet.SideSheetDialog
 import com.mintokoneko.minto.R
 import com.mintokoneko.minto.databinding.ActivityMainBinding
+import com.mintokoneko.minto.databinding.ContentMainBinding
 import com.mintokoneko.minto.ui.bottom_sheet.BottomSheet
 import com.mintokoneko.minto.utils.getWidth
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private lateinit var mainContent: ContentMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,22 +31,24 @@ class MainActivity : AppCompatActivity() {
     private fun setupNavigation(context: Context) {
         val navHostFragment = supportFragmentManager.findFragmentById(binding.mainContent.fragmentContainer.id) as NavHostFragment
         val navController = navHostFragment.navController
+        val mainContent = binding.mainContent
 
         if (getWidth(context) < 600) {
-            binding.mainContent.bottomNavigation?.setupWithNavController(navController)
+            mainContent.bottomNavigation?.setupWithNavController(navController)
+
         } else {
-            binding.mainContent.navigationRail?.setupWithNavController(navController)
+            mainContent.navigationRail?.setupWithNavController(navController)
         }
 
-        val topAppBar = binding.mainContent.topAppBar
+        val topAppBar = binding.mainContent.appBarLayout?.topAppBar
         val appBarConfiguration = AppBarConfiguration(navController.graph)
-        topAppBar.setupWithNavController(navController, appBarConfiguration)
-        topAppBar.setOnMenuItemClickListener { menuItem ->
+        topAppBar?.setupWithNavController(navController, appBarConfiguration)
+        topAppBar?.setOnMenuItemClickListener { menuItem ->
             NavigationUI.onNavDestinationSelected(menuItem, navController)  // setup settings nav
 
-            if (menuItem.itemId == R.id.user_mi) {
-                showSheet(context)
-            }
+//            if (menuItem.itemId == R.id.user_mi) {
+//                showSheet(context)
+//            }
             true
         }
     }
