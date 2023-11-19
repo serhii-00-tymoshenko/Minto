@@ -14,6 +14,8 @@ class MainViewModel : ViewModel() {
     private val _userChats = MutableLiveData<List<UserChat>>(listOf())
     val userChats: LiveData<List<UserChat>> = _userChats
 
+
+
     fun setCurrentChatTitle(title: String) {
         _currentChatTitle.value = title
     }

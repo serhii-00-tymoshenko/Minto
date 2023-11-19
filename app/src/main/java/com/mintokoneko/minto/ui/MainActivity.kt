@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.GestureDetector
 import android.view.MotionEvent
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.GestureDetectorCompat
@@ -18,7 +19,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.mintokoneko.minto.databinding.ActivityMainBinding
 import com.mintokoneko.minto.utils.USER_PHOTO_SWIPE_THRESHOLD
 import com.mintokoneko.minto.utils.getWidth
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), LifecycleObserver {
     private lateinit var binding: ActivityMainBinding
     private val sharedViewModel: MainViewModel by viewModels()
@@ -127,5 +130,9 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
 
     private fun showSideSheet(context: Context) {
         Toast.makeText(context, "Side sheet", Toast.LENGTH_SHORT).show()
+    }
+
+    fun onClick(v: View) {
+        Toast.makeText(this, "GG", Toast.LENGTH_SHORT).show()
     }
 }

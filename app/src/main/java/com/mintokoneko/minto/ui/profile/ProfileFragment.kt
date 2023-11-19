@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import com.mintokoneko.minto.R
 import com.mintokoneko.minto.databinding.FragmentProfileBinding
 import com.mintokoneko.minto.databinding.FragmentSettingsBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!

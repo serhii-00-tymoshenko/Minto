@@ -1,6 +1,10 @@
 package com.mintokoneko.minto.ui.chats.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.recyclerview.widget.DiffUtil
@@ -9,7 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mintokoneko.minto.databinding.ItemChatPreviewBinding
 import com.mintokoneko.minto.entities.user_chat.UserChat
 import com.mintokoneko.minto.entities.user_chat.ChatDetailsCompact
-import com.mintokoneko.minto.entities.user_chat.mappers.toUserChatCompact
+import com.mintokoneko.minto.entities.user_chat.mappers.toChatDetailCompact
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.toDuration
 
 class ChatsAdapter(
     private val transitionListener: MotionLayout.TransitionListener,
@@ -27,12 +33,18 @@ class ChatsAdapter(
 
     inner class ChatsViewHolder(private val binding: ItemChatPreviewBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        @SuppressLint("ClickableViewAccessibility")
         fun bind(userChat: UserChat) {
             if (adapterPosition != RecyclerView.NO_POSITION) {
-                binding.root.setOnClickListener {
-                    callback.invoke(toUserChatCompact(userChat))
+                binding.chatPreviewMotionLayout.apply {
+                    setTransitionListener(transitionListener)
+                    setOnTouchListener { _, event ->
+                    if (event.action == MotionEvent.ACTION_UP && this.progress == 0.0f) {
+                            callback.invoke(toChatDetailCompact(getItem(adapterPosition)))
+                        }
+                        false
+                    }
                 }
-                binding.root.setTransitionListener(transitionListener)
             }
 
             binding.apply {
@@ -54,4 +66,5 @@ class ChatsAdapter(
         val currentChatPreview = getItem(position)
         holder.bind(currentChatPreview)
     }
+
 }

@@ -25,11 +25,13 @@ import com.mintokoneko.minto.ui.MainViewModel
 import com.mintokoneko.minto.ui.chat.ChatFragment
 import com.mintokoneko.minto.ui.chats.adapters.ChatsAdapter
 import com.mintokoneko.minto.utils.getWidth
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class ChatsFragment : Fragment() {
     private var _binding: FragmentChatsBinding? = null
     private val binding get() = _binding!!

@@ -11,7 +11,9 @@ import androidx.navigation.fragment.navArgs
 import com.mintokoneko.minto.databinding.FragmentChatBinding
 import com.mintokoneko.minto.entities.user_chat.ChatDetailsCompact
 import com.mintokoneko.minto.utils.getWidth
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ChatFragment : Fragment() {
     private var _binding: FragmentChatBinding? = null
     private val binding get() = _binding!!
