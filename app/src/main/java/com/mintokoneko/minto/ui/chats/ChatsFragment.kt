@@ -92,7 +92,10 @@ class ChatsFragment : Fragment() {
             }
 
             override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) {
-                // Nothing
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(1500)
+                    motionLayout?.transitionToStart()
+                }
             }
 
             override fun onTransitionTrigger(
