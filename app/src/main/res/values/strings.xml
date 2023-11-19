@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Minto</string>
+    <string name="app_name">Minto &gt;&lt;</string>
     <string name="logo_description">Logo</string>
     <string name="user_mi_title">User</string>
     <string name="settings_mi_title">Settings</string>
@@ -9,4 +9,11 @@
     <string name="chats_mi_title">Chats</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="feed_tab_title">@string/app_name</string>
+    <string name="chat_tab_title">Chat</string>
+    <string name="chats_tab_title">Chats</string>
+    <string name="search_tab_title">Search</string>
+    <string name="profile_tab_title">Profile</string>
+    <string name="settings_tab_title">Settings</string>
 </resources>
