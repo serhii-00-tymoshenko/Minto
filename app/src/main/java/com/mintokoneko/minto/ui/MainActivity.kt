@@ -25,11 +25,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupNavigation(this)
-        setSwipeableUser()
+        setSwipeableUserChange()
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun setSwipeableUser() {
+    private fun setSwipeableUserChange() {
         val gestureDetectorListener = object : GestureDetector.SimpleOnGestureListener() {
             override fun onDown(e: MotionEvent): Boolean {
                 return true
