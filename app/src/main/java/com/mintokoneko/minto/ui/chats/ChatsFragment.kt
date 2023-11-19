@@ -1,60 +1,100 @@
 package com.mintokoneko.minto.ui.chats
 
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.mintokoneko.minto.R
+import com.mintokoneko.minto.databinding.FragmentChatsBinding
+import com.mintokoneko.minto.entities.ChatPreview
+import com.mintokoneko.minto.ui.chat.ChatFragment
+import com.mintokoneko.minto.ui.chats.adapters.ChatsAdapter
+import com.mintokoneko.minto.utils.getWidth
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ChatsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ChatsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var _binding: FragmentChatsBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var chatsAdapter: ChatsAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentChatsBinding.inflate(layoutInflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupChatsRecycler(requireContext())
+    }
+
+    private fun setupChatsRecycler(context: Context) {
+        chatsAdapter = ChatsAdapter { chatId ->
+            showChat(chatId, context)
+        }
+
+        val chatsRecycler = binding.chatsRecycler
+        chatsRecycler.apply {
+            adapter = chatsAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
+        }
+
+        chatsAdapter.submitList(
+            listOf(
+                ChatPreview(
+                    "Serhii Tymoshenko",
+                    R.drawable.ic_launcher_background,
+                    "Hello World",
+                    0
+                ),
+                ChatPreview(
+                    "Serhii Tymoshenko",
+                    R.drawable.ic_launcher_background,
+                    "Hello World1",
+                    1
+                ),
+                ChatPreview(
+                    "Serhii Tymoshenko",
+                    R.drawable.ic_launcher_background,
+                    "Hello World2",
+                    2
+                ),
+            )
+        )
+    }
+
+    private fun showChat(chatId: Int, context: Context) {
+        if (getWidth(context) < 600) {
+            val showChatAction = ChatsFragmentDirections.actionChatsFragmentToChatFragment(chatId)
+            requireView().findNavController().navigate(showChatAction)
+        } else {
+            val fragmentManager = requireActivity().supportFragmentManager
+
+
+            val chatFragment = ChatFragment()
+            val bundle = Bundle()
+            bundle.putInt("chat_id", chatId)
+            chatFragment.arguments = bundle
+
+            fragmentManager
+                .beginTransaction()
+                .replace(binding.chatContainer!!.id, chatFragment)
+                .addToBackStack(null)
+                .commit()
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chats, container, false)
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ChatsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ChatsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

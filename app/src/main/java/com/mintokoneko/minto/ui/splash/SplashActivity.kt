@@ -29,7 +29,7 @@ class SplashActivity : AppCompatActivity() {
 
     private fun launchRegisterActivity() {
         CoroutineScope(Dispatchers.Main).launch {
-            delay(2500)
+            delay(1000)
             val registerActivityIntent = Intent(this@SplashActivity, MainActivity::class.java)
             startActivity(registerActivityIntent)
             finish()

@@ -12,14 +12,23 @@
         tools:layout="@layout/fragment_feed" />
     <fragment
         android:id="@+id/chatFragment"
-        android:name="com.mintokoneko.minto.ui.chats.chat.ChatFragment"
+        android:name="com.mintokoneko.minto.ui.chat.ChatFragment"
         android:label="fragment_chat"
-        tools:layout="@layout/fragment_chat" />
+        tools:layout="@layout/fragment_chat" >
+        <argument
+            android:name="chat_id"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
     <fragment
         android:id="@+id/chatsFragment"
         android:name="com.mintokoneko.minto.ui.chats.ChatsFragment"
         android:label="fragment_chats"
-        tools:layout="@layout/fragment_chats" />
+        tools:layout="@layout/fragment_chats" >
+        <action
+            android:id="@+id/action_chatsFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+    </fragment>
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.mintokoneko.minto.ui.search.SearchFragment"
