@@ -2,6 +2,7 @@ package com.mintokoneko.minto.ui.chats.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -11,7 +12,8 @@ import com.mintokoneko.minto.entities.user_chat.ChatDetailsCompact
 import com.mintokoneko.minto.entities.user_chat.mappers.toUserChatCompact
 
 class ChatsAdapter(
-    private val callback: (ChatDetailsCompact) -> Unit
+    private val transitionListener: MotionLayout.TransitionListener,
+    private val callback: (ChatDetailsCompact) -> Unit,
 ) : ListAdapter<UserChat, ChatsAdapter.ChatsViewHolder>(DIFF_CALLBACK) {
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<UserChat>() {
@@ -30,6 +32,7 @@ class ChatsAdapter(
                 binding.root.setOnClickListener {
                     callback.invoke(toUserChatCompact(userChat))
                 }
+                binding.root.setTransitionListener(transitionListener)
             }
 
             binding.apply {
