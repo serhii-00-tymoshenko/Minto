@@ -1,6 +1,7 @@
 package com.mintokoneko.minto.ui.chat
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,13 +9,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.mintokoneko.minto.databinding.FragmentChatBinding
-import com.mintokoneko.minto.utils.NO_VALUE
+import com.mintokoneko.minto.entities.user_chat.ChatDetailsCompact
 import com.mintokoneko.minto.utils.getWidth
 
 class ChatFragment : Fragment() {
     private var _binding: FragmentChatBinding? = null
     private val binding get() = _binding!!
-    private var chatId: Int = NO_VALUE
+    private lateinit var chatDetailsCompact: ChatDetailsCompact
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,20 +29,33 @@ class ChatFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        chatId = getChatId(requireContext())
-        binding.chatId.text = chatId.toString()
+        chatDetailsCompact = getUser(requireContext())
     }
 
-    private fun getChatId(context: Context): Int {
-        val width = getWidth(context)
-        if (width < 600) {
-            return navArgs<ChatFragmentArgs>().value.chatId
+    private fun getUser(context: Context): ChatDetailsCompact {
+        return if (getWidth(context) < 600) {
+            navArgs<ChatFragmentArgs>().value.userChatCompact
         } else {
-            arguments?.let { bundle ->
-                return bundle.getInt("chat_id", -1)
+            getArgumentsParcelable()
+        }
+    }
+
+    private fun getArgumentsParcelable(): ChatDetailsCompact {
+        val emptyChatDetailsCompact = ChatDetailsCompact(
+            "",
+            0,
+        )
+        arguments?.let { bundle ->
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                bundle.getParcelable(
+                    "user_chat_compact",
+                    ChatDetailsCompact::class.java
+                ) as ChatDetailsCompact
+            } else {
+                bundle.getParcelable("user_chat_compact") ?: emptyChatDetailsCompact
             }
         }
-        return -1
+        return emptyChatDetailsCompact
     }
 
     override fun onDestroy() {

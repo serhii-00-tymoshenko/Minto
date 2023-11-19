@@ -16,9 +16,8 @@
         android:label="@string/chat_tab_title"
         tools:layout="@layout/fragment_chat">
         <argument
-            android:name="chat_id"
-            android:defaultValue="-1"
-            app:argType="integer" />
+            android:name="userChatCompact"
+            app:argType="com.mintokoneko.minto.entities.user_chat.ChatDetailsCompact" />
     </fragment>
     <fragment
         android:id="@+id/chatsFragment"

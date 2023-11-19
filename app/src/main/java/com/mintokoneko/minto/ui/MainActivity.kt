@@ -7,7 +7,9 @@ import android.os.Bundle
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.view.GestureDetectorCompat
+import androidx.lifecycle.LifecycleObserver
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -17,8 +19,9 @@ import com.mintokoneko.minto.databinding.ActivityMainBinding
 import com.mintokoneko.minto.utils.USER_PHOTO_SWIPE_THRESHOLD
 import com.mintokoneko.minto.utils.getWidth
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), LifecycleObserver {
     private lateinit var binding: ActivityMainBinding
+    private val sharedViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,22 +29,65 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupNavigation(this)
-        setSwipeableUserChange(this)
+        sharedViewModel.getUserChats()
     }
 
-    private fun setSwipeableUserChange(context: Context) {
-        val gestureDetector = setGestureDetector(context)
-        setTopAppBarPhotoListener(gestureDetector)
+    private fun setupNavigation(context: Context) {
+        val navHostFragment = supportFragmentManager.findFragmentById(binding.mainContent.fragmentContainer.id) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        setupNavigationUi(context, navController)
+        setupTopAppBar(context, navController)
+    }
+
+    private fun setupNavigationUi(
+        context: Context,
+        navController: NavController
+    ) {
+        if (getWidth(context) < 600) {
+            binding.mainContent.bottomNavigation?.setupWithNavController(navController)
+        } else {
+            binding.mainContent.navigationRail?.setupWithNavController(navController)
+        }
+    }
+
+    private fun setupTopAppBar(context: Context, navController: NavController) {
+        setupToolbar(navController)
+        setupUserChange(context)
+    }
+
+    private fun setupToolbar(navController: NavController) {
+        val toolbar = binding.mainContent.topAppBar.toolbar
+        setupToolbarTitle()
+
+        val toolbarConfiguration = AppBarConfiguration(navController.graph)
+        toolbar.setupWithNavController(navController, toolbarConfiguration)
+        toolbar.setOnMenuItemClickListener { menuItem ->
+            NavigationUI.onNavDestinationSelected(menuItem, navController)  // setup settings nav
+            true
+        }
+
+    }
+
+    private fun setupToolbarTitle() {
+        sharedViewModel.currentChatTitle.observe(this) { title ->
+            binding.mainContent.topAppBar.toolbar.title = title
+        }
+    }
+
+    private fun setupUserChange(context: Context) {
+        val gestureDetector = setUserChangeGestureDetector(context)
+        setUserChangeListener(gestureDetector)
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun setTopAppBarPhotoListener(gestureDetector: GestureDetectorCompat) {
-        binding.mainContent.appBarLayout.topAppBarUserPhoto.setOnTouchListener { v, event ->
+    private fun setUserChangeListener(gestureDetector: GestureDetectorCompat) {
+        binding.mainContent.topAppBar.toolbarUserPhoto.setOnTouchListener { _, event ->
             gestureDetector.onTouchEvent(event)
         }
     }
 
-    private fun setGestureDetector(context: Context): GestureDetectorCompat {
+    private fun setUserChangeGestureDetector(context: Context): GestureDetectorCompat {
         val gestureDetectorListener = object : GestureDetector.SimpleOnGestureListener() {
             override fun onDown(e: MotionEvent): Boolean {
                 return true
@@ -64,37 +110,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         val gestureDetector = GestureDetectorCompat(context, gestureDetectorListener)
-
         return gestureDetector
-    }
-
-    private fun setupNavigation(context: Context) {
-        val navHostFragment = supportFragmentManager.findFragmentById(binding.mainContent.fragmentContainer.id) as NavHostFragment
-        val navController = navHostFragment.navController
-
-        setupNavigationUi(context, navController)
-        setupTopAppBar(navController)
-    }
-
-    private fun setupTopAppBar(navController: NavController) {
-        val topAppBar = binding.mainContent.appBarLayout.topAppBar
-        val appBarConfiguration = AppBarConfiguration(navController.graph)
-        topAppBar.setupWithNavController(navController, appBarConfiguration)
-        topAppBar.setOnMenuItemClickListener { menuItem ->
-            NavigationUI.onNavDestinationSelected(menuItem, navController)  // setup settings nav
-            true
-        }
-    }
-
-    private fun setupNavigationUi(
-        context: Context,
-        navController: NavController
-    ) {
-        if (getWidth(context) < 600) {
-            binding.mainContent.bottomNavigation?.setupWithNavController(navController)
-        } else {
-            binding.mainContent.navigationRail?.setupWithNavController(navController)
-        }
     }
 
     private fun showSheet(context: Context) {

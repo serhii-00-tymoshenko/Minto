@@ -16,4 +16,5 @@
     <string name="search_tab_title">Search</string>
     <string name="profile_tab_title">Profile</string>
     <string name="settings_tab_title">Settings</string>
+    <string name="chat_preview_message_status_image_description">Status code</string>
 </resources>

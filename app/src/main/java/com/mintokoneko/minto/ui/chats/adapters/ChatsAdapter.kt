@@ -6,39 +6,44 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mintokoneko.minto.databinding.ItemChatPreviewBinding
-import com.mintokoneko.minto.entities.ChatUserPreview
+import com.mintokoneko.minto.entities.user_chat.UserChat
+import com.mintokoneko.minto.entities.user_chat.ChatDetailsCompact
+import com.mintokoneko.minto.entities.user_chat.mappers.toUserChatCompact
 
 class ChatsAdapter(
-    private val callback: (Int) -> Unit
-) : ListAdapter<ChatUserPreview, ChatsAdapter.ChatsViewHolder>(DIFF_CALLBACK) {
+    private val callback: (ChatDetailsCompact) -> Unit
+) : ListAdapter<UserChat, ChatsAdapter.ChatsViewHolder>(DIFF_CALLBACK) {
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ChatUserPreview>() {
-            override fun areItemsTheSame(oldItem: ChatUserPreview, newItem: ChatUserPreview)
-                = oldItem.chatId == newItem.chatId
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<UserChat>() {
+            override fun areItemsTheSame(oldItem: UserChat, newItem: UserChat) =
+                oldItem.chatId == newItem.chatId
 
-            override fun areContentsTheSame(oldItem: ChatUserPreview, newItem: ChatUserPreview)
-                = oldItem == newItem
+            override fun areContentsTheSame(oldItem: UserChat, newItem: UserChat) =
+                oldItem == newItem
         }
     }
 
-    inner class ChatsViewHolder(private val binding: ItemChatPreviewBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(chatUserPreview: ChatUserPreview) {
+    inner class ChatsViewHolder(private val binding: ItemChatPreviewBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(userChat: UserChat) {
             if (adapterPosition != RecyclerView.NO_POSITION) {
                 binding.root.setOnClickListener {
-                    callback.invoke(getItem(adapterPosition).chatId)
+                    callback.invoke(toUserChatCompact(userChat))
                 }
             }
 
             binding.apply {
-                chatPreviewUserName.text = chatUserPreview.userName
-                chatPreviewMessage.text = chatUserPreview.message
-                chatPreviewUserPhoto.setImageResource(chatUserPreview.userPhoto)
+                chatPreviewUserName.text = userChat.userName
+                chatPreviewMessage.text = userChat.message
+                chatPreviewUserPhoto.setImageResource(userChat.userPhoto)
+                chatPreviewMessageStatusImage.setImageResource(userChat.messageStatusImage)
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatsViewHolder {
-        val binding = ItemChatPreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemChatPreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ChatsViewHolder(binding)
     }
 
