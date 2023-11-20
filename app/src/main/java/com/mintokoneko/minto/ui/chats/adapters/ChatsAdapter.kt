@@ -38,8 +38,9 @@ class ChatsAdapter(
             if (adapterPosition != RecyclerView.NO_POSITION) {
                 binding.chatPreviewMotionLayout.apply {
                     setTransitionListener(transitionListener)
+                    // TODO: KILL ALL GOOGLE DEVS
                     setOnTouchListener { _, event ->
-                    if (event.action == MotionEvent.ACTION_UP && this.progress == 0.0f) {
+                        if (event.action == MotionEvent.ACTION_UP && this.progress == 0.0f) {
                             callback.invoke(toChatDetailCompact(getItem(adapterPosition)))
                         }
                         false

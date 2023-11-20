@@ -25,6 +25,7 @@ import com.mintokoneko.minto.ui.MainViewModel
 import com.mintokoneko.minto.ui.chat.ChatFragment
 import com.mintokoneko.minto.ui.chats.adapters.ChatsAdapter
 import com.mintokoneko.minto.utils.getWidth
+import com.mintokoneko.minto.utils.vibrate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -78,9 +79,11 @@ class ChatsFragment : Fragment() {
                 startId: Int,
                 endId: Int
             ) {
-                CoroutineScope(Dispatchers.Main).launch {
-                    delay(1500)
-                    motionLayout?.transitionToStart()
+                CoroutineScope(Dispatchers.Default).launch {
+                    delay(2000)
+                    this.launch(Dispatchers.Main) {
+                        motionLayout?.transitionToStart()
+                    }
                 }
             }
 
@@ -89,16 +92,9 @@ class ChatsFragment : Fragment() {
                 startId: Int,
                 endId: Int,
                 progress: Float
-            ) {
-                // Nothing
-            }
+            ) { }
 
-            override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) {
-                CoroutineScope(Dispatchers.Main).launch {
-                    delay(1500)
-                    motionLayout?.transitionToStart()
-                }
-            }
+            override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) { }
 
             override fun onTransitionTrigger(
                 motionLayout: MotionLayout?,
@@ -109,16 +105,6 @@ class ChatsFragment : Fragment() {
                 vibrate(context)
             }
         }
-
-
-    // TODO: Re-work
-    private fun vibrate(context: Context) {
-        if (Build.VERSION.SDK_INT >= 26) {
-            (context.getSystemService(VIBRATOR_SERVICE) as Vibrator).vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
-        } else {
-            (context.getSystemService(VIBRATOR_SERVICE) as Vibrator).vibrate(50)
-        }
-    }
 
     private fun setTitle(title: String) {
         sharedViewModel.setCurrentChatTitle(title)
