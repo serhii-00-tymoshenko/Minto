@@ -18,4 +18,5 @@
     <string name="settings_tab_title">Settings</string>
     <string name="chat_preview_message_status_image_description">Status code</string>
     <string name="delete_icon_description">Delete</string>
+    <string name="searchbar_hint">Search</string>
 </resources>

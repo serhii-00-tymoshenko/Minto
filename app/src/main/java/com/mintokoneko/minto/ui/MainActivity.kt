@@ -17,12 +17,13 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.mintokoneko.minto.databinding.ActivityMainBinding
+import com.mintokoneko.minto.interfaces.TopAppBarConfigurator
 import com.mintokoneko.minto.utils.USER_PHOTO_SWIPE_THRESHOLD
 import com.mintokoneko.minto.utils.getWidth
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), LifecycleObserver {
+class MainActivity : AppCompatActivity(), LifecycleObserver, TopAppBarConfigurator {
     private lateinit var binding: ActivityMainBinding
     private val sharedViewModel: MainViewModel by viewModels()
 
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
         setContentView(binding.root)
 
         setupNavigation(this)
+        sharedViewModel.topAppBarConfigurator = this
         sharedViewModel.getUserChats()
     }
 
@@ -134,5 +136,13 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
 
     fun onClick(v: View) {
         Toast.makeText(this, "GG", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun hide() {
+        binding.mainContent.contentMainMotionLayout.transitionToEnd()
+    }
+
+    override fun show() {
+        binding.mainContent.contentMainMotionLayout.transitionToStart()
     }
 }

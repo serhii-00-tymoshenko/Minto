@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.mintokoneko.minto.R
 import com.mintokoneko.minto.entities.user_chat.MessageStatus
 import com.mintokoneko.minto.entities.user_chat.UserChat
+import com.mintokoneko.minto.interfaces.TopAppBarConfigurator
 
 class MainViewModel : ViewModel() {
     private val _currentChatTitle = MutableLiveData<String>()
@@ -14,7 +15,7 @@ class MainViewModel : ViewModel() {
     private val _userChats = MutableLiveData<List<UserChat>>(listOf())
     val userChats: LiveData<List<UserChat>> = _userChats
 
-
+    var topAppBarConfigurator: TopAppBarConfigurator? = null
 
     fun setCurrentChatTitle(title: String) {
         _currentChatTitle.value = title
